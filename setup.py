@@ -9,7 +9,7 @@ setuptools.setup(
     long_description="The game results will be acquired for the Japanese baseball teams such as Chunichi and Swarroese.",
     long_description_content_type="text/markdown",
     url="https://xmadoka.hatenablog.com",
-    packages=setuptools.find_packages(include="baseball_news_picker"),
+    packages=setuptools.find_packages(exclude='alexa'),
     classifiers=[
         "Programming Language :: Python :: 3.6.0a3",
         "License :: OSI Approved :: MIT License",
