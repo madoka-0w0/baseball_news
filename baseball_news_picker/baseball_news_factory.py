@@ -31,7 +31,7 @@ class BaseballNewsFactory:
         for td in tds:
             em = td.find("em")
             if em is not None:
-                if em.text == _date.strftime("%d"):
+                if em.text == str(_date.day):
                     return td
 
     def __get_status(self, _date):
@@ -51,7 +51,8 @@ class BaseballNewsFactory:
             span = element.find("span", class_="score")
             if span.text:
                 score = re.findall(pattern, span.text)
-                return int(score[0]), int(score[1])
+                if len(score) == 2:
+                    return int(score[0]), int(score[1])
         return 0, 0
 
     def __get_news_page(self, _date):

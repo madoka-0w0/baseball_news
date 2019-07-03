@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="baseball_news_picker",
-    version="1.0",
+    version="1.1",
     author="madoka takagi",
     author_email="mad106.t@gmail.com",
     description="baseball news picker. pick from yahoo sports news.",
