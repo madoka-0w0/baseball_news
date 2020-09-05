@@ -14,5 +14,6 @@ class BaseballNewsPicker(NewsPicker):
         self.__schedule = self.SCHEDULE_URL_FORMAT.format(team_num)
 
     def get_schedule_page(self, _date):
-        year_month = _date.strftime('%Y%m')
-        return self.get_page("{}?{}".format(self.__schedule, urlencode({"date": year_month})))
+        year_month = _date.strftime('%Y-%m')
+        page = self.get_page("{}?{}".format(self.__schedule, urlencode({"month": year_month})))
+        return page

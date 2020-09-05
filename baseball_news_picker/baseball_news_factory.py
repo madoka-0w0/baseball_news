@@ -4,6 +4,7 @@ from datetime import datetime
 from baseball_news_picker.baseball_news_picker import BaseballNewsPicker
 from baseball_news_picker.model.baseball_news import BaseballNews
 from baseball_news_picker.model.game_status import GameStatus
+from baseball_news_picker.model.team import Team
 
 
 class BaseballNewsFactory:
@@ -29,17 +30,16 @@ class BaseballNewsFactory:
         elements = self.__news_picker.get_schedule_page(_date)
         tds = elements.find_all("td")
         for td in tds:
-            em = td.find("em")
+            em = td.find(class_="bb-calendarTable__date")
             if em is not None:
                 if em.text == str(_date.day):
                     return td
 
     def __get_status(self, _date):
         element = self.__get_date_elements(_date)
-        if 'gameday' in element.get("class"):
-            span = element.find("span", class_="status")
-            if span:
-                return span.text.strip()
+        status = element.find(class_="bb-calendarTable__status")
+        if status:
+            return status.text.strip()
         else:
             return GameStatus.NO_GAME
 
@@ -48,7 +48,7 @@ class BaseballNewsFactory:
 
         element = self.__get_date_elements(_date)
         if element:
-            span = element.find("span", class_="score")
+            span = element.find("p", class_="bb-calendarTable__score")
             if span.text:
                 score = re.findall(pattern, span.text)
                 if len(score) == 2:
@@ -58,7 +58,7 @@ class BaseballNewsFactory:
     def __get_news_page(self, _date):
         element = self.__get_date_elements(_date)
         if element:
-            a = element.find("a")
+            a = element.find("a",class_="bb-calendarTable__status")
             if a:
                 url = a.get("href")
                 if url:
@@ -67,13 +67,14 @@ class BaseballNewsFactory:
     def __get_news_text(self, _date):
         news_elem = self.__get_news_page(_date)
         if news_elem:
-            div = news_elem.find("div", id="yjSNLiveBattlereview")
+            div = news_elem.find("p", class_="bb-paragraph")
             if div:
                 return div.text
 
     def __get_battle_team(self, _date):
         element = self.__get_date_elements(_date)
         if element:
-            span = element.find("span", class_="team")
-            if span:
-                return span.text
+            span = element.find("a",class_="bb-calendarTable__versusLogo")
+            href = span.get("href")
+            team_id = int(href.split("/")[3])
+            return Team.get_team(team_id)

@@ -51,5 +51,11 @@ class Team:
         return Team.__team_number_dict.get(team_name)
 
     @staticmethod
+    def get_team(team_id):
+        for name, _id in Team.__team_number_dict.items():
+            if _id == team_id:
+                return name
+
+    @staticmethod
     def is_baseball_team(team):
         return team in Team.__team_number_dict
