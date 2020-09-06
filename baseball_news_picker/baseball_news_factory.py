@@ -44,21 +44,30 @@ class BaseballNewsFactory:
             return GameStatus.NO_GAME
 
     def __get_scores(self, _date):
+        """
+        my team, battle teamの順でスコアを返却する
+        """
         pattern = "[0-9]+"
 
         element = self.__get_date_elements(_date)
         if element:
             span = element.find("p", class_="bb-calendarTable__score")
+            win = span.find(class_="bb-calendarTable__win") is not None
             if span.text:
                 score = re.findall(pattern, span.text)
                 if len(score) == 2:
-                    return int(score[0]), int(score[1])
+                    scores = [int(score[0]), int(score[1])]
+                    if win:
+                        scores = sorted(scores, reverse=True)
+                    else:
+                        scores = sorted(scores)
+                    return scores[0], scores[1]
         return 0, 0
 
     def __get_news_page(self, _date):
         element = self.__get_date_elements(_date)
         if element:
-            a = element.find("a",class_="bb-calendarTable__status")
+            a = element.find("a", class_="bb-calendarTable__status")
             if a:
                 url = a.get("href")
                 if url:
@@ -74,7 +83,7 @@ class BaseballNewsFactory:
     def __get_battle_team(self, _date):
         element = self.__get_date_elements(_date)
         if element:
-            span = element.find("a",class_="bb-calendarTable__versusLogo")
+            span = element.find("a", class_="bb-calendarTable__versusLogo")
             href = span.get("href")
             team_id = int(href.split("/")[3])
             return Team.get_team(team_id)
